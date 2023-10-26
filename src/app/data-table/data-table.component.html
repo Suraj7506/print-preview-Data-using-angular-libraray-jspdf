@@ -1,0 +1,26 @@
+<h2>{{ name }}</h2>
+<button appExportPdf [contentId]="'content-data'">Export PDF</button>
+<button appPreviewPdf [contentId]="'content-data'">Preview PDF</button> <!-- Add this button -->
+
+
+<div id="content-data">
+    <div class="my-content">
+      <h2>My Content Title</h2>
+  
+      <div class="my-content-body" *ngFor="let section of myData">
+        <h2>{{ section.sectionTitle }}</h2>
+  
+        <div class="header">
+          <span *ngFor="let header of section.headers">{{ header }}</span>
+        </div>
+  
+        <div class="body">
+          <div class="item" *ngFor="let item of section.items">
+            <span>{{ item.no }}</span>
+            <span>{{ item.firstName }}</span>
+            <span>{{ item.lastName }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

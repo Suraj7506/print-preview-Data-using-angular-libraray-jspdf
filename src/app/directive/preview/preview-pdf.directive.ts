@@ -14,11 +14,20 @@ export class PreviewPdfDirective {
 
     if (source) {
       const doc = new jsPDF('p', 'pt', 'a4');
-      doc.setFontSize(12);
-
       doc.html(source, {
-        
         callback: function (pdf) {
+          const totalPages = pdf.getNumberOfPages(); // Get the total page count
+
+          for (let i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            pdf.setTextColor(150);  
+            pdf.text("Company Name: Nimap", 14, 15);
+            pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.getWidth() - 100, pdf.internal.pageSize.getHeight() - 30, {
+              align: 'center'
+            });
+          }
+
           const blob = pdf.output('blob');
           const url = URL.createObjectURL(blob);
 

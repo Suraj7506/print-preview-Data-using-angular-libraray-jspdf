@@ -12,28 +12,39 @@ export class ExportPdfDirective {
   @HostListener('click')
   onClick() {
     const source = document.getElementById(this.contentId);
-
     if (source) {
-      const doc = new jsPDF('p', 'mm', 'a4');
-      const specialElementHandlers = {
-        '#editor': function () {
-          return true;
-        },
-      };
-
-      doc.setFont('helvetica'); // Set the font family
-      doc.setFontSize(9); // Set the font size
-
-      // Convert JSON data to PDF
-      this.convertDataToPDF(doc);
+      // Explicitly set the page size to A4
+      const doc = new jsPDF({
+        unit: 'px',
+        format: 'a4',
+        orientation: 'p',
+      });
+      let pageTopMargin = 20;
+      const pageNumbersY = doc.internal.pageSize.height - 10;
+      const contentHeight = doc.internal.pageSize.height - pageTopMargin - pageNumbersY;
 
       doc.html((document?.getElementById(this.contentId) as HTMLElement), {
         callback: function (doc) {
           const totalPages = doc.getNumberOfPages();
+
           for (let i = 1; i <= totalPages; i++) {
             doc.setPage(i);
-            doc.text("Company Name: Nimap", 50, 15);
-            doc.text(`Page ${i} of ${totalPages}`, doc.internal.pageSize.width / 2, 287, {
+            doc.text("Company Name: Nimap", 120, pageTopMargin);
+            pageTopMargin = 20;
+
+            const currentPageHeight = i === totalPages ? doc.internal.pageSize.height - pageTopMargin : contentHeight;
+
+            // Calculate if there is enough space on the current page
+            const usedSpace = pageTopMargin + currentPageHeight;
+            const remainingSpace = doc.internal.pageSize.height - usedSpace;
+
+            // If there isn't enough space, add a new page
+            if (remainingSpace < 0 && i < totalPages) {
+              doc.addPage();
+              pageTopMargin = 20;
+            }
+
+            doc.text(`Page ${i} of ${totalPages}`, doc.internal.pageSize.width / 2, pageNumbersY, {
               align: 'center',
             });
           }
@@ -46,37 +57,5 @@ export class ExportPdfDirective {
     }
   }
 
-  convertDataToPDF(doc: jsPDF) {
-    let startY = 40; // Start position for the content
-    const xOffset = 10; // Offset for section titles
-    const itemHeight = 10; // Height of each item row
-
-    this.jsonData.forEach((section) => {
-      // Add section title
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(section.sectionTitle, xOffset, startY);
-      startY += 15;
-
-      // Add section headers
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(10);
-      section.headers.forEach((header: string | string[], index: number) => {
-        doc.text(header, xOffset + index * 40, startY);
-      });
-      startY += 10;
-
-      // Add section items
-      section.items.forEach((item: { [s: string]: unknown; } | ArrayLike<unknown>) => {
-        startY += itemHeight;
-        Object.values(item).forEach((value:any, index) => {
-          doc.text(value.toString(), xOffset + index * 40, startY);
-        });
-      }),
-
-      // Move to the next section
-      startY += 20 // Adjust for spacing between sections
-    });
-  }
 
 }

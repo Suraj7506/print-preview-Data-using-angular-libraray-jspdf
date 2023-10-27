@@ -1,26 +1,33 @@
 <h2>{{ name }}</h2>
 <button appExportPdf [contentId]="'content-data'">Export PDF</button>
-<button appPreviewPdf [contentId]="'content-data'">Preview PDF</button> <!-- Add this button -->
+<button appPreviewPdf [contentId]="'content-data'">Preview PDF</button> 
 
+<div id="content-data" style="margin-top: 20px;">
+  <div class="my-content">
+    <h2 style="font-size: 10px;">My Content Title</h2>
 
-<div id="content-data">
-    <div class="my-content">
-      <h2>My Content Title</h2>
-  
-      <div class="my-content-body" *ngFor="let section of myData">
-        <h2>{{ section.sectionTitle }}</h2>
-  
+    <div class="my-content-body">
+      <!-- Loop through your sections -->
+      <div *ngFor="let section of myData" class="section">
+        <h2 style="font-size: 8px;">{{ section.sectionTitle }}</h2>
+
         <div class="header">
-          <span *ngFor="let header of section.headers">{{ header }}</span>
+          <span *ngFor="let header of section.headers" style="font-size: 15px;">{{ header }}</span>
         </div>
-  
+
         <div class="body">
+          <!-- Loop through your items -->
           <div class="item" *ngFor="let item of section.items">
-            <span>{{ item.no }}</span>
-            <span>{{ item.firstName }}</span>
-            <span>{{ item.lastName }}</span>
+            <span class="data" style="font-size: 15px;">
+              <span>{{ item.no }}</span>
+              <span>{{ item.firstName }}</span>
+              <span>{{ item.lastName }}</span>
+            </span>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </div>
+
+

@@ -7,6 +7,7 @@ import jspdf, { jsPDF } from 'jspdf';
 export class PreviewPdfDirective {
 
   @Input() contentId!: string;
+  @Input() jsonData: any[] = [];
 
   @HostListener('click')
   onClick() {

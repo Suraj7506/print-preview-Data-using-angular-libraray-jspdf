@@ -14,7 +14,7 @@ export class ExportPdfDirective {
     if (source) {
       const doc = new jsPDF({
         unit: 'mm',
-        format: [300,320],
+        format: 'a4',
         orientation: 'p',
       });
       let pageTopMargin = 20;
